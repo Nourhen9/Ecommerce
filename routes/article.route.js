@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Article=require("../models/article")
 const Scategorie =require("../models/scategorie")
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 // afficher la liste des articles.
 router.get('/', async (req, res, )=> {
 try {
@@ -25,7 +27,7 @@ res.status(404).json({ message: error.message });
 // afficher la liste des articles par page
 router.get('/pagination', async(req, res) => {
 const page = req.query.page ||1 // Current page //bch fel url n7otou ?page=2
-const limit = req.query.limit ||5; // Number of items per page
+const limit = req.query.limit ||5; // Number of items per page sinon 5 kana ma7adidhch
 // Calculez le nombre d'éléments à sauter (offset)
 const offset = (page - 1) * limit;
 try {

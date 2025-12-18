@@ -6,6 +6,8 @@ const app = express();
 const categorieRouter = require('./routes/categorie.route')
 const scategorieRouter =require("./routes/scategorie.route")
 const articleRouter =require("./routes/article.route")
+const userRouter =require("./routes/user.route")
+
 //config dotenv
 dotenv.config()
 //Les cors
@@ -25,6 +27,8 @@ res.send("bonjour");
 app.use('/api/categories', categorieRouter)
 app.use('/api/scategories', scategorieRouter)
 app.use('/api/articles', articleRouter)
+app.use('/api/users', userRouter);
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}`);
