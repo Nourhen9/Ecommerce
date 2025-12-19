@@ -2,21 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Article=require("../models/article")
 const Scategorie =require("../models/scategorie")
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const { verifyToken } = require("../middleware/verify-token")
+const { authorizeRoles } = require("../middleware/authorizeRoles")
+const { uploadFile } = require('../middleware/uploadfile')
 // afficher la liste des articles.
 router.get('/', async (req, res, )=> {
 try {
 const articles = await Article.find({}, null, {sort: {'_id': -
-1}}).populate("scategorieID").exec();
+1}}).populate("scategorieID").exec();//populate:"Remplit" le champ scategorieID avec les données réelles de la sous-catégorie
+//exec:Exécute la requête et retourne les résultats
 res.status(200).json(articles);
 } catch (error) {
 res.status(404).json({ message: error.message });
 }
 });
 // créer un nouvel article
-router.post('/', async (req, res) => {
-const nouvarticle = new Article(req.body)
+router.post('/', uploadFile.single("imageart"),async (req, res) => {
+const {reference,designation,prix,marque,qtestock,scategorieID} =
+req.body
+const imageart = req.file.filename
+const nouvarticle = new
+Article({reference:reference,designation:designation,prix:prix,marque:marque
+,qtestock:qtestock,scategorieID:scategorieID,imageart:imageart})
 try {
 await nouvarticle.save();
 res.status(200).json(nouvarticle );
@@ -97,6 +104,16 @@ const sousCategorieIDs = sousCategories.map(scategorie => scategorie._id);
 // Recherche des articles correspondant aux sous-catégories trouvées
 const articles = await Article.find({ scategorieID: { $in:
 sousCategorieIDs } }).exec();
+res.status(200).json(articles);
+} catch (error) {
+res.status(404).json({ message: error.message });
+}
+});
+
+// afficher la liste des articles.
+router.get('/',verifyToken,authorizeRoles("user","admin","visiteur"),async (req, res )=> {
+try {
+const articles = await Article.find();
 res.status(200).json(articles);
 } catch (error) {
 res.status(404).json({ message: error.message });

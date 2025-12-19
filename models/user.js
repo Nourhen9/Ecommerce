@@ -26,7 +26,7 @@ default: "user"
 isActive: {
 
 type: Boolean,
-default: true,
+default: false,
 required: false
 },
 avatar :{
@@ -39,10 +39,10 @@ required: false
 timestamps: true,//w9t tsn3 w9tch modification saret
 },
 )
-userSchema.pre('save', async function(next) {
-if (!this.isModified('password')) return next()
-const salt = await bcrypt.genSalt(10)
-const hashedPassword = await bcrypt.hash(this.password, salt)
-this.password = hashedPassword
+userSchema.pre('save', async function() {
+	if (!this.isModified('password')) return
+	const salt = await bcrypt.genSalt(10)
+	const hashedPassword = await bcrypt.hash(this.password, salt)
+	this.password = hashedPassword
 })
 module.exports = mongoose.model('User', userSchema)

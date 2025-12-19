@@ -28,7 +28,7 @@ app.use('/api/categories', categorieRouter)
 app.use('/api/scategories', scategorieRouter)
 app.use('/api/articles', articleRouter)
 app.use('/api/users', userRouter);
-
+app.use(express.static(__dirname + '/'));
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}`);
